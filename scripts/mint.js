@@ -6,7 +6,7 @@ task("mint", "Mints from the STORE_Explorer_Test contract")
 .addParam("address", "The address to receive a token")
 .setAction(async function (taskArguments, hre) {
     const contract = await getContract("STORE_Explorer_Test", hre);
-    const transactionResponse = await contract.mintTo(taskArguments.address, {
+    const transactionResponse = await contract.safeMint(taskArguments.address, {
         gasLimit: 500_000,
     });
     console.log(`Transaction Hash: ${transactionResponse.hash}`);

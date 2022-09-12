@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
-/// @custom:security-contact sohaibahsan007@live.com
 contract STORE_Explorer_Test is
     ERC721,
     ERC721Enumerable,
@@ -20,10 +19,11 @@ contract STORE_Explorer_Test is
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private currentTokenId;
 
-    constructor() ERC721("STORE_Explorer_Test", "STR") {}
+    /// @dev Base token URI used as a prefix by tokenURI().
+    string public baseTokenURI;
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://gateway.pinata.cloud/ipfs/";
+    constructor() ERC721("STORE_Explorer_Test", "STR") {
+       baseTokenURI = "";
     }
 
     function safeMint(address to, string memory uri)
@@ -77,4 +77,13 @@ contract STORE_Explorer_Test is
     {
         return super.supportsInterface(interfaceId);
     }
+      /// @dev Returns an URI for a given token ID
+      function _baseURI() internal view virtual override returns (string memory) {
+        return baseTokenURI;
+      }
+
+      /// @dev Sets the base token URI prefix.
+      function setBaseTokenURI(string memory _baseTokenURI) public {
+        baseTokenURI = _baseTokenURI;
+      }
 }
