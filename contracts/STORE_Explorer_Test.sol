@@ -19,6 +19,9 @@ contract STORE_Explorer_Test is
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter private currentTokenId;
 
+    // storeit URl
+    mapping(uint256 => string) private _storeitURLs;
+
     /// @dev Base token URI used as a prefix by tokenURI().
     string public baseTokenURI;
 
@@ -26,7 +29,7 @@ contract STORE_Explorer_Test is
        baseTokenURI = "";
     }
 
-    function safeMint(address to, string memory uri)
+    function safeMint(address to, string memory uri,string memory storeiturl)
         public
         payable
         returns (uint256)
@@ -40,6 +43,7 @@ contract STORE_Explorer_Test is
 
         _safeMint(to, newItemId);
         _setTokenURI(newItemId, uri);
+        _setStoreit(newItemId, storeiturl);
         return newItemId;
     }
 
@@ -85,5 +89,19 @@ contract STORE_Explorer_Test is
       /// @dev Sets the base token URI prefix.
       function setBaseTokenURI(string memory _baseTokenURI) public {
         baseTokenURI = _baseTokenURI;
-      }
+    }
+
+    function _setStoreit(uint256 tokenId, string memory _storeitURL) internal virtual {
+        require(_exists(tokenId), "STOREITStorage: URI set of nonexistent token");
+        _storeitURLs[tokenId] = _storeitURL;
+    }
+
+    /**
+     * @dev See {IERC721Metadata-tokenURI}.
+     */
+    function storeitURL(uint256 tokenId) public view virtual returns (string memory) {
+        _requireMinted(tokenId);
+        string memory __storeitURL = _storeitURLs[tokenId];
+        return __storeitURL;
+    }
 }
