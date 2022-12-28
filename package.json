@@ -1,12 +1,12 @@
 {
-  "name": "nft-tutorial",
+  "name": "store-explorer_contract-nft",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Sohaib Ahsan",
   "license": "ISC",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
