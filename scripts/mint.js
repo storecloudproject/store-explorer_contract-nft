@@ -21,15 +21,19 @@ task("mintNFT", "Mints from the STORE_NFT_Marketplace contract")
     console.log(`Transaction Hash:`,transactionResponse);
   });
 
-  task("getAllNFTs", "Get List of NFT List from STORE_NFT_Marketplace contract")
+  task("getAllMintedNFTs", "Get List of NFT List from STORE_NFT_Marketplace contract")
   .setAction(async function (taskArguments, hre) {
     const contract = await getContract("STORE_NFT_Marketplace", hre);
-    const response = await contract.getAllNFTs();
+    const response = await contract.getAllMintedNFTs();
     console.log(`Response: ${response}`);
   });
 
-
-
+  task("getMyMintedNFTs", "Get List of NFT List from STORE_NFT_Marketplace contract")
+  .setAction(async function (taskArguments, hre) {
+    const contract = await getContract("STORE_NFT_Marketplace", hre);
+    const response = await contract.getMyMintedNFTs();
+    console.log(`Response: ${response}`);
+  });
 
 task(
   "set-base-token-uri",
