@@ -25,6 +25,11 @@ function getAccount() {
 	return new ethers.Wallet(getEnvVariable("ACCOUNT_PRIVATE_KEY"), getProvider());
 }
 
+// Helper method for fetching a getSigners
+function getSigners() {
+	return new ethers.Wallet(getEnvVariable("ACCOUNT_PRIVATE_KEY"), getProvider()).getSigners();
+}
+
 // Helper method for fetching a contract instance at a given address
 function getContract(contractName, hre) {
 	const account = getAccount();
@@ -36,4 +41,5 @@ module.exports = {
 	getProvider,
 	getAccount,
 	getContract,
+  getSigners
 }
