@@ -6,13 +6,14 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract STORE_NFT_Marketplace is ERC721URIStorage {
+contract Fort_Mason_Marketplace is ERC721URIStorage {
 
     using Counters for Counters.Counter;
     //_tokenIds variable has the most recent minted tokenId
     Counters.Counter private _tokenIds;
     // //Keeps track of the number of nfts sold on the marketplace
     // Counters.Counter private _nftsSold;
+
     //Keeps track of the number of nfts sold on the marketplace
     Counters.Counter private _mintedNFTs;
     //owner is the contract address that created the smart contract
@@ -66,7 +67,7 @@ contract STORE_NFT_Marketplace is ERC721URIStorage {
     //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId for minted NFTs
     mapping(uint256 => MintedNFT) private idsToMintedNFT;
 
-    constructor() ERC721("STORE_NFT_Marketplace_v0.0.1-beta", "STRMPv0.0.1-beta") {
+    constructor() ERC721("Fort_Mason_Marketplace_v0.0.1-beta", "STRMPv0.0.1-beta") {
         owner = payable(msg.sender);
     }
 

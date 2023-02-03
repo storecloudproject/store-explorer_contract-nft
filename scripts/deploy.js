@@ -3,8 +3,8 @@ const { getAccount } = require("./helpers");
 const fs = require("fs");
 
 
-task("deploy", "Deploys the STORE_NFT_Marketplace.sol contract").setAction(async function (taskArguments, hre) {
-    const nftContractFactory = await hre.ethers.getContractFactory("STORE_NFT_Marketplace", getAccount());
+task("deploy", "Deploys the FortMason.sol contract").setAction(async function (taskArguments, hre) {
+    const nftContractFactory = await hre.ethers.getContractFactory("FortMason", getAccount());
     const nft = await nftContractFactory.deploy();
     console.log(`Contract deployed to address: ${nft.address}`);
 
@@ -14,5 +14,5 @@ task("deploy", "Deploys the STORE_NFT_Marketplace.sol contract").setAction(async
     }
 
     //This writes the ABI and address to the mktplace.json
-    fs.writeFileSync('./abi/STORE_NFT_Marketplace.json', JSON.stringify(data))
+    fs.writeFileSync('./abi/FortMason.json', JSON.stringify(data))
 });
