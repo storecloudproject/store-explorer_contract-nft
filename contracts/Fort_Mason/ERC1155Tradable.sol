@@ -139,16 +139,15 @@ contract ERC1155Tradable is
      * @param IPFSID Optional URI for this token type
      * @param STOREID Asset id in Store Database
      * @param SUPPLY amount to supply the first owner
-     * @param DATA Data to pass if receiver is contract
      * @return The newly created token ID
      */
     function mintNFT(
       string memory CLOUD,
         string memory IPFSID,
         string memory STOREID,
-        uint256 SUPPLY,
-        bytes memory DATA
+        uint256 SUPPLY
     ) public payable returns (uint256) {
+
         require(msg.value >  0, "Hopefully sending the correct price");
 
         //Increment the tokenId counter, which is keeping track of the number of minted NFTs
@@ -160,7 +159,7 @@ contract ERC1155Tradable is
             emit URI(IPFSID, _id);
         }
 
-        _mint(msg.sender, _id, SUPPLY, DATA);
+        _mint(msg.sender, _id, SUPPLY, "0x00");
 
         tokenSupply[_id] = SUPPLY;
 
