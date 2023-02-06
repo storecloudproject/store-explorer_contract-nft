@@ -148,7 +148,7 @@ contract ERC1155Tradable is
         string memory STOREID,
         uint256 SUPPLY,
         bytes memory DATA
-    ) public payable onlyOwner returns (uint256) {
+    ) public payable returns (uint256) {
         require(msg.value >  0, "Hopefully sending the correct price");
 
         //Increment the tokenId counter, which is keeping track of the number of minted NFTs
