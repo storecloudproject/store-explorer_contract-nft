@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract Fort_Mason_Marketplace is ERC721URIStorage {
+contract STORE_Forever_Storage is ERC721URIStorage {
 
     using Counters for Counters.Counter;
     //_tokenIds variable has the most recent minted tokenId
@@ -16,6 +16,12 @@ contract Fort_Mason_Marketplace is ERC721URIStorage {
 
     //Keeps track of the number of nfts sold on the marketplace
     Counters.Counter private _mintedNFTs;
+
+    // //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId
+    // mapping(uint256 => NFTForSale) private idsToNFTForSale;
+    //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId for minted NFTs
+    mapping(uint256 => MintedNFT) private idsToMintedNFT;
+
     //owner is the contract address that created the smart contract
     address payable owner;
 
@@ -23,12 +29,9 @@ contract Fort_Mason_Marketplace is ERC721URIStorage {
     struct MintedNFT {
         uint256 tokenId;
         address payable owner;
-        string cloud;
         string ipfsId;
         string storeId;
-        string storeitUrl;
-        uint256 supply;
-        uint256 price;
+        string cloud;
     }
 
     // //The structure to store info about a listed token
@@ -55,19 +58,11 @@ contract Fort_Mason_Marketplace is ERC721URIStorage {
         address owner,
         string ipfsId,
         string storeId,
-        string cloud,
-        string storeitUrl,
-        uint256 supply,
-        uint256 price
+        string cloud
     );
 
-    // //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId
-    // mapping(uint256 => NFTForSale) private idsToNFTForSale;
 
-    //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId for minted NFTs
-    mapping(uint256 => MintedNFT) private idsToMintedNFT;
-
-    constructor() ERC721("Fort_Mason_Marketplace_v0.0.1-beta", "STRMPv0.0.1-beta") {
+    constructor() ERC721("STORE Forever Storage", "SFSv0.0.1-beta") {
         owner = payable(msg.sender);
     }
 
@@ -84,11 +79,29 @@ contract Fort_Mason_Marketplace is ERC721URIStorage {
         return _tokenIds.current();
     }
 
-    // mint NFT here.
-    // use transaction value to transfer to the contract owner.
-    function mintNFT(string memory cloud, string memory ipfsId,string memory storeId, string memory storeitUrl,uint256 supply,uint256 price) public payable returns (uint) {
+        /**
+     * @dev Creates a new token type and assigns _initialSupply to an address
+     * NOTE: remove onlyOwner if you want third parties to create new tokens on
+     *       your contract (which may change your IDs)
+     * NOTE: The token id must be passed. This allows lazy creation of tokens or
+     *       creating NFTs by setting the id's high bits with the method
+     *       described in ERC1155 or to use ids representing values other than
+     *       successive small integers. If you wish to create ids as successive
+     *       small integers you can either subclass this class to count onchain
+     *       or maintain the offchain cache of identifiers recommended in
+     *       ERC1155 and calculate successive ids from that.
+     * @param CLOUD Forever Stored On value
+     * @param IPFSID Optional URI for this token type
+     * @param STOREID Asset id in Store Database
+     * @return The newly created token ID
+     */
+   function mintNFT(
+      string memory CLOUD,
+        string memory IPFSID,
+        string memory STOREID
+    ) public payable returns (uint256) {
 
-        require(msg.value >  0, "Hopefully sending the correct price");
+        require(msg.value > 0, "Hopefully sending the correct price");
         //Increment the tokenId counter, which is keeping track of the number of minted NFTs
         _tokenIds.increment();
 
@@ -98,7 +111,7 @@ contract Fort_Mason_Marketplace is ERC721URIStorage {
         _safeMint(msg.sender, newNFTId);
 
         //Map the tokenId to the tokenURI (which is an IPFS URL with the NFT metadata)
-        _setTokenURI(newNFTId, ipfsId);
+        _setTokenURI(newNFTId, IPFSID);
 
         //Transfer the platform fee to the marketplace creator
         payable(owner).transfer(msg.value);
@@ -107,23 +120,17 @@ contract Fort_Mason_Marketplace is ERC721URIStorage {
         idsToMintedNFT[newNFTId] = MintedNFT(
             newNFTId,
             payable(msg.sender),
-            cloud,
-            ipfsId,
-            storeId,
-            storeitUrl,
-            supply,
-            price);
+            CLOUD,
+            IPFSID,
+            STOREID);
 
         //Emit the event for successful transfer. The frontend parses this message and updates the end user
         emit MintedNFTSuccess(
             newNFTId,
             msg.sender,
-            cloud,
-            ipfsId,
-            storeId,
-            storeitUrl,
-            supply,
-            price);
+            CLOUD,
+            IPFSID,
+            STOREID);
 
         return newNFTId;
     }

@@ -5,11 +5,11 @@ require('dotenv').config();
 
 const { CONTRACT_OWNER } = process.env;
 
-task("mintNFT", "Mints from the FortMason contract").setAction(async function (
+task("mintNFT", "Mints from the STORE_Forever_Storage contract").setAction(async function (
   taskArguments,
   hre
 ) {
-  const contract = await getContract("FortMason", hre);
+  const contract = await getContract("STORE_Forever_Storage", hre);
   const price = hre.ethers.utils.parseUnits("0.0001", "ether");
   const transactionResponse = await contract.mintNFT(
     "cloud",
@@ -24,20 +24,20 @@ task("mintNFT", "Mints from the FortMason contract").setAction(async function (
   console.log(`Transaction Hash:`, transactionResponse);
 });
 
-task("totalSupply", "Total Token Supply from the FortMason contract").setAction(async function (
+task("totalSupply", "Total Token Supply from the STORE_Forever_Storage contract").setAction(async function (
   taskArguments,
   hre
 ) {
-  const contract = await getContract("FortMason", hre);
+  const contract = await getContract("STORE_Forever_Storage", hre);
   const transactionResponse = await contract.totalSupply();
   console.log(`Transaction Hash:`, transactionResponse);
 });
 
-task("safeTransferFrom", "safeTransferFrom from the FortMason contract").setAction(async function (
+task("safeTransferFrom", "safeTransferFrom from the STORE_Forever_Storage contract").setAction(async function (
   taskArguments,
   hre
 ) {
-  const contract = await getContract("FortMason", hre);
+  const contract = await getContract("STORE_Forever_Storage", hre);
   const transactionResponse = await contract.safeTransferFrom(
     CONTRACT_OWNER,
     "0xc7cA31A8398dc5247FCe496B26B61a5eA4Ee2366",
@@ -48,11 +48,11 @@ task("safeTransferFrom", "safeTransferFrom from the FortMason contract").setActi
   console.log(`Transaction Hash:`, transactionResponse);
 });
 
-task("balanceOf", "balanceOf from the FortMason contract").setAction(async function (
+task("balanceOf", "balanceOf from the STORE_Forever_Storage contract").setAction(async function (
   taskArguments,
   hre
 ) {
-  const contract = await getContract("FortMason", hre);
+  const contract = await getContract("STORE_Forever_Storage", hre);
   const transactionResponse = await contract.balanceOf(
     CONTRACT_OWNER,
     1
@@ -60,11 +60,11 @@ task("balanceOf", "balanceOf from the FortMason contract").setAction(async funct
   console.log(`Transaction Hash:`, transactionResponse);
 });
 
-task("uri", "uri from the FortMason contract").setAction(async function (
+task("uri", "uri from the STORE_Forever_Storage contract").setAction(async function (
   taskArguments,
   hre
 ) {
-  const contract = await getContract("FortMason", hre);
+  const contract = await getContract("STORE_Forever_Storage", hre);
   const transactionResponse = await contract.uri(
     1
   );
@@ -73,18 +73,18 @@ task("uri", "uri from the FortMason contract").setAction(async function (
 
 task(
   "getAllMintedNFTs",
-  "Get List of NFT List from FortMason contract"
+  "Get List of NFT List from STORE_Forever_Storage contract"
 ).setAction(async function (taskArguments, hre) {
-  const contract = await getContract("FortMason", hre);
+  const contract = await getContract("STORE_Forever_Storage", hre);
   const response = await contract.getAllMintedNFTs();
   console.log(`Response: ${response}`);
 });
 
 task(
   "getMyMintedNFTs",
-  "Get List of NFT List from FortMason contract"
+  "Get List of NFT List from STORE_Forever_Storage contract"
 ).setAction(async function (taskArguments, hre) {
-  const contract = await getContract("FortMason", hre);
+  const contract = await getContract("STORE_Forever_Storage", hre);
   const response = await contract.getMyMintedNFTs();
   console.log(`Response: ${response}`);
 });
@@ -95,7 +95,7 @@ task(
 )
   .addParam("baseUrl", "The base of the tokenURI endpoint to set")
   .setAction(async function (taskArguments, hre) {
-    const contract = await getContract("FortMason", hre);
+    const contract = await getContract("STORE_Forever_Storage", hre);
     const transactionResponse = await contract.setBaseTokenURI(
       taskArguments.baseUrl,
       {
@@ -108,7 +108,7 @@ task(
 task("token-uri", "Fetches the token metadata for the given token ID")
   .addParam("tokenId", "The tokenID to fetch metadata for")
   .setAction(async function (taskArguments, hre) {
-    const contract = await getContract("FortMason", hre);
+    const contract = await getContract("STORE_Forever_Storage", hre);
     const response = await contract.tokenURI(taskArguments.tokenId, {
       gasLimit: 500_000,
     });
