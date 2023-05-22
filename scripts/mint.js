@@ -13,7 +13,6 @@ task("mintNFT", "Mints from the STORE_Forever_Storage contract").setAction(async
   const price = hre.ethers.utils.parseUnits("0.0001", "ether");
   const transactionResponse = await contract.mintNFT(
     "cloud",
-    "bafkreihsrvrzscp7kp2br54kq73ys25d5g75k7vnfcrgpay3szc6nugfta",
     "storeId",
     1,
     "0x00",

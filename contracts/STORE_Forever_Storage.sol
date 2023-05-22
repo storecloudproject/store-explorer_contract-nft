@@ -29,7 +29,6 @@ contract STORE_Forever_Storage is ERC721URIStorage {
     struct MintedNFT {
         uint256 tokenId;
         address payable owner;
-        string ipfsId;
         string storeId;
         string cloud;
     }
@@ -56,7 +55,6 @@ contract STORE_Forever_Storage is ERC721URIStorage {
     event MintedNFTSuccess (
         uint256 indexed tokenId,
         address owner,
-        string ipfsId,
         string storeId,
         string cloud
     );
@@ -91,13 +89,11 @@ contract STORE_Forever_Storage is ERC721URIStorage {
      *       or maintain the offchain cache of identifiers recommended in
      *       ERC1155 and calculate successive ids from that.
      * @param CLOUD Forever Stored On value
-     * @param IPFSID Optional URI for this token type
      * @param STOREID Asset id in Store Database
      * @return The newly created token ID
      */
    function mintNFT(
       string memory CLOUD,
-        string memory IPFSID,
         string memory STOREID
     ) public payable returns (uint256) {
 
@@ -110,8 +106,8 @@ contract STORE_Forever_Storage is ERC721URIStorage {
         //Mint the NFT with tokenId newNFTId to the address who called mintNFT
         _safeMint(msg.sender, newNFTId);
 
-        //Map the tokenId to the tokenURI (which is an IPFS URL with the NFT metadata)
-        _setTokenURI(newNFTId, IPFSID);
+        //Map the tokenId to the tokenURI (which is an Store ID)
+        _setTokenURI(newNFTId, STOREID);
 
         //Transfer the platform fee to the marketplace creator
         payable(owner).transfer(msg.value);
@@ -121,7 +117,6 @@ contract STORE_Forever_Storage is ERC721URIStorage {
             newNFTId,
             payable(msg.sender),
             CLOUD,
-            IPFSID,
             STOREID);
 
         //Emit the event for successful transfer. The frontend parses this message and updates the end user
@@ -129,7 +124,6 @@ contract STORE_Forever_Storage is ERC721URIStorage {
             newNFTId,
             msg.sender,
             CLOUD,
-            IPFSID,
             STOREID);
 
         return newNFTId;
