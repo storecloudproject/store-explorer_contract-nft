@@ -11,13 +11,13 @@ contract STORE_Forever_Storage is ERC721URIStorage {
     using Counters for Counters.Counter;
     //_tokenIds variable has the most recent minted tokenId
     Counters.Counter private _tokenIds;
-    // //Keeps track of the number of nfts sold on the marketplace
+    //Keeps track of the number of nfts sold on the marketplace
     // Counters.Counter private _nftsSold;
 
     //Keeps track of the number of nfts sold on the marketplace
     Counters.Counter private _mintedNFTs;
 
-    // //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId
+    //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId
     // mapping(uint256 => NFTForSale) private idsToNFTForSale;
     //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId for minted NFTs
     mapping(uint256 => MintedNFT) private idsToMintedNFT;
@@ -31,6 +31,7 @@ contract STORE_Forever_Storage is ERC721URIStorage {
         address payable owner;
         string storeId;
         string cloud;
+        string cost;
     }
 
     // //The structure to store info about a listed token
@@ -56,7 +57,8 @@ contract STORE_Forever_Storage is ERC721URIStorage {
         uint256 indexed tokenId,
         address owner,
         string storeId,
-        string cloud
+        string cloud,
+        string cost
     );
 
 
@@ -90,11 +92,13 @@ contract STORE_Forever_Storage is ERC721URIStorage {
      *       ERC1155 and calculate successive ids from that.
      * @param CLOUD Forever Stored On value
      * @param STOREID Asset id in Store Database
+    * @param COST Costs to Permanently store.
      * @return The newly created token ID
      */
    function mintNFT(
       string memory CLOUD,
-        string memory STOREID
+      string memory COST,
+      string memory STOREID
     ) public payable returns (uint256) {
 
         require(msg.value > 0, "Hopefully sending the correct price");
@@ -117,14 +121,16 @@ contract STORE_Forever_Storage is ERC721URIStorage {
             newNFTId,
             payable(msg.sender),
             CLOUD,
-            STOREID);
+            STOREID,
+            COST);
 
         //Emit the event for successful transfer. The frontend parses this message and updates the end user
         emit MintedNFTSuccess(
             newNFTId,
             msg.sender,
             CLOUD,
-            STOREID);
+            STOREID,
+            COST);
 
         return newNFTId;
     }
