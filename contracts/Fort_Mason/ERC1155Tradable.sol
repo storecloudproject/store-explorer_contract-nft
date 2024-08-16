@@ -27,7 +27,7 @@ contract ERC1155Tradable is
     using SafeMath for uint256;
     using Counters for Counters.Counter;
 
-    mapping (uint256 => uint256) public tokenSupply;
+    mapping(uint256 => uint256) public tokenSupply;
     //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId for minted NFTs
     mapping(uint256 => MintedNFT) private idsToMintedNFT;
     // Contract name
@@ -46,17 +46,17 @@ contract ERC1155Tradable is
         uint256 tokenId;
         address payable owner;
         string ipfsId;
-        string storeId;
+        string cloudId;
         string cloud;
         uint256 supply;
     }
 
-        // event for succefull minted nft
-    event MintedNFTSuccess (
+    // event for succefull minted nft
+    event MintedNFTSuccess(
         uint256 indexed tokenId,
         address owner,
         string ipfsId,
-        string storeId,
+        string cloudId,
         string cloud,
         uint256 supply
     );
@@ -96,22 +96,18 @@ contract ERC1155Tradable is
         return tokenSupply[_id];
     }
 
-      /**
-    * @dev Returns whether the specified token exists by checking to see if it has a creator
-    * @param _id uint256 ID of the token to query the existence of
-    * @return bool whether the token exists
-    */
-    function _exists(
-      uint256 _id
-    ) internal view returns (bool) {
-      if (idsToMintedNFT[_id].tokenId == _id) return true;
+    /**
+     * @dev Returns whether the specified token exists by checking to see if it has a creator
+     * @param _id uint256 ID of the token to query the existence of
+     * @return bool whether the token exists
+     */
+    function _exists(uint256 _id) internal view returns (bool) {
+        if (idsToMintedNFT[_id].tokenId == _id) return true;
         else return false;
     }
 
-    function exists(
-      uint256 _id
-    ) external view returns (bool) {
-      return _exists(_id);
+    function exists(uint256 _id) external view returns (bool) {
+        return _exists(_id);
     }
 
     /**
@@ -137,18 +133,17 @@ contract ERC1155Tradable is
      *       ERC1155 and calculate successive ids from that.
      * @param CLOUD Forever Stored On value
      * @param IPFSID Optional URI for this token type
-     * @param STOREID Asset id in Store Database
+     * @param CLOUDID Cloud ID in Store Database
      * @param SUPPLY amount to supply the first owner
      * @return The newly created token ID
      */
     function mintNFT(
-      string memory CLOUD,
+        string memory CLOUD,
         string memory IPFSID,
-        string memory STOREID,
+        string memory CLOUDID,
         uint256 SUPPLY
     ) public payable returns (uint256) {
-
-        require(msg.value >  0, "Hopefully sending the correct price");
+        require(msg.value > 0, "Hopefully sending the correct price");
 
         //Increment the tokenId counter, which is keeping track of the number of minted NFTs
         _tokenIds.increment();
@@ -169,21 +164,15 @@ contract ERC1155Tradable is
             payable(msg.sender),
             CLOUD,
             IPFSID,
-            STOREID,
+            CLOUDID,
             SUPPLY
-            );
+        );
 
-         //Transfer the platform fee to the marketplace creator
+        //Transfer the platform fee to the marketplace creator
         payable(owner()).transfer(msg.value);
 
-         //Emit the event for successful transfer. The frontend parses this message and updates the end user
-        emit MintedNFTSuccess(
-             _id,
-            msg.sender,
-            CLOUD,
-            IPFSID,
-            STOREID,
-            SUPPLY);
+        //Emit the event for successful transfer. The frontend parses this message and updates the end user
+        emit MintedNFTSuccess(_id, msg.sender, CLOUD, IPFSID, CLOUDID, SUPPLY);
 
         return _id;
     }
@@ -227,12 +216,14 @@ contract ERC1155Tradable is
         return ContextMixin.msgSender();
     }
 
-        function getLatestIdToMintedNFT() public view returns (MintedNFT memory) {
+    function getLatestIdToMintedNFT() public view returns (MintedNFT memory) {
         uint256 currentNFTId = _tokenIds.current();
         return idsToMintedNFT[currentNFTId];
     }
 
-    function getListedMintedNFTForId(uint256 tokenId) public view returns (MintedNFT memory) {
+    function getListedMintedNFTForId(
+        uint256 tokenId
+    ) public view returns (MintedNFT memory) {
         return idsToMintedNFT[tokenId];
     }
 
@@ -240,7 +231,7 @@ contract ERC1155Tradable is
         return _tokenIds.current();
     }
 
-         //This will return all the NFTs currently listed to be sold on the marketplace
+    //This will return all the NFTs currently listed to be sold on the marketplace
     function getAllMintedNFTs() public view returns (MintedNFT[] memory) {
         uint nftCount = _tokenIds.current();
         MintedNFT[] memory tokens = new MintedNFT[](nftCount);
@@ -248,8 +239,7 @@ contract ERC1155Tradable is
         uint currentId;
         //at the moment currentlyListed is true for all, if it becomes false in the future we will
         //filter out currentlyListed == false over here
-        for(uint i=0;i<nftCount;i++)
-        {
+        for (uint i = 0; i < nftCount; i++) {
             currentId = i + 1;
             MintedNFT storage currentItem = idsToMintedNFT[currentId];
             tokens[currentIndex] = currentItem;
@@ -266,18 +256,17 @@ contract ERC1155Tradable is
         uint currentIndex = 0;
         uint currentId;
         //Important to get a count of all the NFTs that belong to the user before we can make an array for them
-        for(uint i=0; i < totalItemCount; i++)
-        {
-            if(idsToMintedNFT[i+1].owner == msg.sender){
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (idsToMintedNFT[i + 1].owner == msg.sender) {
                 itemCount += 1;
             }
         }
 
         //Once you have the count of relevant NFTs, create an array then store all the NFTs in it
         MintedNFT[] memory nfts = new MintedNFT[](itemCount);
-        for(uint i=0; i < totalItemCount; i++) {
-            if(idsToMintedNFT[i+1].owner == msg.sender) {
-                currentId = i+1;
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (idsToMintedNFT[i + 1].owner == msg.sender) {
+                currentId = i + 1;
                 MintedNFT storage currentItem = idsToMintedNFT[currentId];
                 nfts[currentIndex] = currentItem;
                 currentIndex += 1;

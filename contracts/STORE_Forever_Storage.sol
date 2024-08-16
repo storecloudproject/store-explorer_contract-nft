@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract STORE_Forever_Storage is ERC721URIStorage {
-
     using Counters for Counters.Counter;
     //_tokenIds variable has the most recent minted tokenId
     Counters.Counter private _tokenIds;
@@ -25,11 +24,11 @@ contract STORE_Forever_Storage is ERC721URIStorage {
     //owner is the contract address that created the smart contract
     address payable owner;
 
-        //The structure to store info about a listed token
+    //The structure to store info about a listed token
     struct MintedNFT {
         uint256 tokenId;
         address payable owner;
-        string storeId;
+        string cloudId;
         string cloud;
         string cost;
     }
@@ -53,14 +52,13 @@ contract STORE_Forever_Storage is ERC721URIStorage {
     // );
 
     // event for succefull minted nft
-    event MintedNFTSuccess (
+    event MintedNFTSuccess(
         uint256 indexed tokenId,
         address owner,
-        string storeId,
+        string cloudId,
         string cloud,
         string cost
     );
-
 
     constructor() ERC721("STORE Forever Storage", "SFSv0.0.1-beta") {
         owner = payable(msg.sender);
@@ -71,7 +69,9 @@ contract STORE_Forever_Storage is ERC721URIStorage {
         return idsToMintedNFT[currentNFTId];
     }
 
-    function getListedMintedNFTForId(uint256 tokenId) public view returns (MintedNFT memory) {
+    function getListedMintedNFTForId(
+        uint256 tokenId
+    ) public view returns (MintedNFT memory) {
         return idsToMintedNFT[tokenId];
     }
 
@@ -79,7 +79,7 @@ contract STORE_Forever_Storage is ERC721URIStorage {
         return _tokenIds.current();
     }
 
-        /**
+    /**
      * @dev Creates a new token type and assigns _initialSupply to an address
      * NOTE: remove onlyOwner if you want third parties to create new tokens on
      *       your contract (which may change your IDs)
@@ -91,16 +91,15 @@ contract STORE_Forever_Storage is ERC721URIStorage {
      *       or maintain the offchain cache of identifiers recommended in
      *       ERC1155 and calculate successive ids from that.
      * @param CLOUD Forever Stored On value
-     * @param STOREID Asset id in Store Database
-    * @param COST Costs to Permanently store.
+     * @param CLOUDID Cloud ID in Store Database
+     * @param COST Costs to Permanently store.
      * @return The newly created token ID
      */
-   function mintNFT(
-      string memory CLOUD,
-      string memory COST,
-      string memory STOREID
+    function mintNFT(
+        string memory CLOUD,
+        string memory COST,
+        string memory CLOUDID
     ) public payable returns (uint256) {
-
         require(msg.value > 0, "Hopefully sending the correct price");
         //Increment the tokenId counter, which is keeping track of the number of minted NFTs
         _tokenIds.increment();
@@ -111,7 +110,7 @@ contract STORE_Forever_Storage is ERC721URIStorage {
         _safeMint(msg.sender, newNFTId);
 
         //Map the tokenId to the tokenURI (which is an Store ID)
-        _setTokenURI(newNFTId, STOREID);
+        _setTokenURI(newNFTId, CLOUDID);
 
         //Transfer the platform fee to the marketplace creator
         payable(owner).transfer(msg.value);
@@ -121,21 +120,17 @@ contract STORE_Forever_Storage is ERC721URIStorage {
             newNFTId,
             payable(msg.sender),
             CLOUD,
-            STOREID,
-            COST);
+            CLOUDID,
+            COST
+        );
 
         //Emit the event for successful transfer. The frontend parses this message and updates the end user
-        emit MintedNFTSuccess(
-            newNFTId,
-            msg.sender,
-            CLOUD,
-            STOREID,
-            COST);
+        emit MintedNFTSuccess(newNFTId, msg.sender, CLOUD, CLOUDID, COST);
 
         return newNFTId;
     }
 
-     //This will return all the NFTs currently listed to be sold on the marketplace
+    //This will return all the NFTs currently listed to be sold on the marketplace
     function getAllMintedNFTs() public view returns (MintedNFT[] memory) {
         uint nftCount = _tokenIds.current();
         MintedNFT[] memory tokens = new MintedNFT[](nftCount);
@@ -143,8 +138,7 @@ contract STORE_Forever_Storage is ERC721URIStorage {
         uint currentId;
         //at the moment currentlyListed is true for all, if it becomes false in the future we will
         //filter out currentlyListed == false over here
-        for(uint i=0;i<nftCount;i++)
-        {
+        for (uint i = 0; i < nftCount; i++) {
             currentId = i + 1;
             MintedNFT storage currentItem = idsToMintedNFT[currentId];
             tokens[currentIndex] = currentItem;
@@ -161,18 +155,17 @@ contract STORE_Forever_Storage is ERC721URIStorage {
         uint currentIndex = 0;
         uint currentId;
         //Important to get a count of all the NFTs that belong to the user before we can make an array for them
-        for(uint i=0; i < totalItemCount; i++)
-        {
-            if(idsToMintedNFT[i+1].owner == msg.sender){
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (idsToMintedNFT[i + 1].owner == msg.sender) {
                 itemCount += 1;
             }
         }
 
         //Once you have the count of relevant NFTs, create an array then store all the NFTs in it
         MintedNFT[] memory nfts = new MintedNFT[](itemCount);
-        for(uint i=0; i < totalItemCount; i++) {
-            if(idsToMintedNFT[i+1].owner == msg.sender) {
-                currentId = i+1;
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (idsToMintedNFT[i + 1].owner == msg.sender) {
+                currentId = i + 1;
                 MintedNFT storage currentItem = idsToMintedNFT[currentId];
                 nfts[currentIndex] = currentItem;
                 currentIndex += 1;
